@@ -153,14 +153,12 @@ func (g *Geometry) Distance(g2 *Geometry) float64 {
 	return float64(val)
 }
 
-// GEOS 3.2.0+ required
 func (g *Geometry) HausdorffDistance(g2 *Geometry) float64 {
 	var val C.double
 	C.GEOSHausdorffDistance_r(ctxHandle, g.c, g2.c, &val)
 	return float64(val)
 }
 
-// GEOS 3.2.0+ required
 func (g *Geometry) HausdorffDistanceDensify(g2 *Geometry, densifyFrac float64) float64 {
 	var val C.double
 
@@ -174,14 +172,12 @@ func (g *Geometry) HausdorffDistanceDensify(g2 *Geometry, densifyFrac float64) f
 	return float64(val)
 }
 
-// GEOS 3.4.0+ required
 func (g *Geometry) NearestPoints(g2 *Geometry) []Coord {
 	c := C.GEOSNearestPoints_r(ctxHandle, g.c, g2.c)
 	coordSeq := coordSeqFromC(c, true)
 	return coordSeq.toCoords()
 }
 
-// GEOS 3.4.0+ required
 func (g *Geometry) NearestPointZs(g2 *Geometry) []CoordZ {
 	c := C.GEOSNearestPoints_r(ctxHandle, g.c, g2.c)
 	coordSeq := coordSeqFromC(c, true)
@@ -289,6 +285,30 @@ func (g *Geometry) IsClosed() bool {
 	return flag == C.char(1)
 }
 
+func (g *Geometry) MinimumRotatedRectangle() *Geometry {
+	c := C.GEOSMinimumRotatedRectangle_r(ctxHandle, g.c)
+	return geomFromC(c, true)
+}
+
+func (g *Geometry) MinimumWidth() *Geometry {
+	c := C.GEOSMinimumWidth_r(ctxHandle, g.c)
+	return geomFromC(c, true)
+}
+
+func (g *Geometry) MinimumClearanceLine() *Geometry {
+	c := C.GEOSMinimumClearanceLine_r(ctxHandle, g.c)
+	return geomFromC(c, true)
+}
+
+func (g *Geometry) MinimumClearance() float64 {
+	var v C.double
+	i := C.GEOSMinimumClearance_r(ctxHandle, g.c, &v)
+	if i == 0 {
+		return 0.0
+	}
+	return float64(v)
+}
+
 func (g *Geometry) Envelope() *Geometry {
 	c := C.GEOSEnvelope_r(ctxHandle, g.c)
 	return geomFromC(c, true)
@@ -339,9 +359,13 @@ func (g *Geometry) Centroid() *Geometry {
 	return geomFromC(c, true)
 }
 
-// GEOS 3.4.0+ required
 func (g *Geometry) Node() *Geometry {
 	c := C.GEOSNode_r(ctxHandle, g.c)
+	return geomFromC(c, true)
+}
+
+func (g *Geometry) ClipByRect(xmin, ymin, xmax, ymax float64) *Geometry {
+	c := C.GEOSClipByRect_r(ctxHandle, g.c, C.double(xmin), C.double(ymin), C.double(xmax), C.double(ymax))
 	return geomFromC(c, true)
 }
 
@@ -360,19 +384,16 @@ func (g *Geometry) ExtractUniquePoints() *Geometry {
 	return geomFromC(c, true)
 }
 
-// Support LineString, LinearRing only
 func (g *Geometry) SharedPaths(line *Geometry) *Geometry {
 	c := C.GEOSSharedPaths_r(ctxHandle, g.c, line.c)
 	return geomFromC(c, true)
 }
 
-// GEOS 3.3.0+ required
 func (g *Geometry) Snap(g2 *Geometry, tol float64) *Geometry {
 	c := C.GEOSSnap_r(ctxHandle, g.c, g2.c, C.double(tol))
 	return geomFromC(c, true)
 }
 
-// GEOS 3.4.0+ required
 func (g *Geometry) DelaunayTriangulation(tol float64, onlyEdges bool) *Geometry {
 	onlyEdgesC := C.int(0)
 	if onlyEdges {
@@ -394,9 +415,7 @@ func (g *Geometry) BufferWithStyle(width float64, quadsegs int, endCapStyle CapT
 	return geomFromC(c, true)
 }
 
-// Only support LineString.
-// Negative width for right side offset, positive width for left side offset.
-func (g *Geometry) OffsetCurve(width float64, quadsegs int, joinStyle JoinType, mitreLimit float64) *Geometry {
+func (g *Geometry) ParallelOffset(width float64, quadsegs int, joinStyle JoinType, mitreLimit float64) *Geometry {
 	c := C.GEOSOffsetCurve_r(ctxHandle, g.c, C.double(width), C.int(quadsegs),
 		C.int(joinStyle), C.double(mitreLimit))
 	return geomFromC(c, true)
@@ -635,7 +654,6 @@ func geomFromC(c *C.GEOSGeometry, hasOwnership bool) *Geometry {
 	return geom
 }
 
-// Geometry used to construct another geometry must give up its ownership.
 func (g *Geometry) giveupOwnership() {
 	if g == nil {
 		return

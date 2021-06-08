@@ -901,7 +901,7 @@ func TestBuffer(t *testing.T) {
 	}
 }
 
-func TestOffsetCurve(t *testing.T) {
+func TestParallelOffset(t *testing.T) {
 	ln := CreateLineString([]Coord{
 		{0, 0},
 		{10, 0},
@@ -910,12 +910,12 @@ func TestOffsetCurve(t *testing.T) {
 	width := -10.0
 	quadsegs := 8
 
-	geom := ln.OffsetCurve(width, quadsegs, JOIN_MITRE, 5)
+	geom := ln.ParallelOffset(width, quadsegs, JOIN_MITRE, 5)
 
 	if geom == nil {
-		t.Errorf("Error: OffsetCurve() error")
+		t.Errorf("Error: ParallelOffset() error")
 	} else {
-		t.Logf("Log: OffsetCurve() returns %q", geom.ToWKT())
+		t.Logf("Log: ParallelOffset() returns %q", geom.ToWKT())
 	}
 }
 

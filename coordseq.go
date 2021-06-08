@@ -64,6 +64,15 @@ func (s *coordSequence) getZ(idx int) float64 {
 	return float64(val)
 }
 
+func (s *coordSequence) getDimensions() int {
+	var val C.uint
+	i := C.GEOSCoordSeq_getDimensions_r(ctxHandle, s.c, &val)
+	if i == 0 {
+		return 0
+	}
+	return int(val)
+}
+
 func (s *coordSequence) toCoords() []Coord {
 	var coords []Coord
 
@@ -86,6 +95,12 @@ func (s *coordSequence) toCoordZs() []CoordZ {
 	}
 
 	return coords
+}
+
+func (s *coordSequence) IsCCW() bool {
+	var is_ccw C.char
+	C.GEOSCoordSeq_isCCW_r(ctxHandle, s.c, &is_ccw)
+	return int8(is_ccw) > 0
 }
 
 func coordSeqFromC(c *C.GEOSCoordSequence, hasOwnership bool) *coordSequence {
