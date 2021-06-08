@@ -7,7 +7,7 @@ import (
 )
 
 /*
-#cgo CFLAGS: -I./lib
+#cgo CFLAGS: -I./lib/capi
 #cgo LDFLAGS: -L./lib -lgeos_c
 #include <geos_c.h>
 #include <stdlib.h>
@@ -660,4 +660,39 @@ func (g *Geometry) giveupOwnership() {
 	}
 
 	runtime.SetFinalizer(g, nil)
+}
+
+func CreateEmptyPoint() *Geometry {
+	c := C.GEOSGeom_createEmptyPoint_r(ctxHandle)
+	return geomFromC(c, true)
+}
+
+func CreateEmptyPolygon() *Geometry {
+	c := C.GEOSGeom_createEmptyPolygon_r(ctxHandle)
+	return geomFromC(c, true)
+}
+
+func CreateEmptyLineString() *Geometry {
+	c := C.GEOSGeom_createEmptyLineString_r(ctxHandle)
+	return geomFromC(c, true)
+}
+
+func CreateEmptyMultiPoint() *Geometry {
+	c := C.GEOSGeom_createEmptyCollection_r(ctxHandle, C.int(MULTIPOINT))
+	return geomFromC(c, true)
+}
+
+func CreateEmptyMultiLineString() *Geometry {
+	c := C.GEOSGeom_createEmptyCollection_r(ctxHandle, C.int(MULTILINESTRING))
+	return geomFromC(c, true)
+}
+
+func CreateEmptyMultiPolygon() *Geometry {
+	c := C.GEOSGeom_createEmptyCollection_r(ctxHandle, C.int(MULTIPOLYGON))
+	return geomFromC(c, true)
+}
+
+func CreateEmptyGeometryCollection() *Geometry {
+	c := C.GEOSGeom_createEmptyCollection_r(ctxHandle, C.int(GEOMETRYCOLLECTION))
+	return geomFromC(c, true)
 }
