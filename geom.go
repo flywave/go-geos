@@ -112,6 +112,10 @@ func (g *Geometry) GetNumCoordinates() int {
 	return int(C.GEOSGetNumCoordinates_r(ctxHandle, g.c))
 }
 
+func (g *Geometry) GetDimensions() int {
+	return int(C.GEOSGeom_getDimensions_r(ctxHandle, g.c))
+}
+
 // Only support Point
 func (g *Geometry) GetXY() (float64, float64) {
 	var x, y C.double
@@ -119,6 +123,12 @@ func (g *Geometry) GetXY() (float64, float64) {
 	C.GEOSGeomGetY_r(ctxHandle, g.c, &y)
 
 	return float64(x), float64(y)
+}
+
+func (g *Geometry) GetZ() float64 {
+	var z C.double
+	C.GEOSGeomGetZ_r(ctxHandle, g.c, &z)
+	return float64(z)
 }
 
 // Only support LineString, LinearRing or Point
