@@ -7,7 +7,7 @@ import (
 )
 
 /*
-#cgo CFLAGS: -I./lib/capi
+#cgo CFLAGS: -I./lib
 #cgo linux LDFLAGS: -L./lib/linux -lgeos_c
 #cgo windows LDFLAGS: -L./lib/windows -lgeos_c
 #cgo darwin LDFLAGS: -L./lib/darwin -lgeos_c
