@@ -8,7 +8,10 @@ import (
 
 /*
 #cgo CFLAGS: -I./lib/capi
-#cgo LDFLAGS: -L./lib -lgeos_c
+#cgo linux LDFLAGS: -L./lib/linux -lgeos_c
+#cgo windows LDFLAGS: -L./lib/windows -lgeos_c
+#cgo darwin LDFLAGS: -L./lib/darwin -lgeos_c
+#cgo darwin,arm LDFLAGS: -L./lib/darwin_arm -lgeos_c
 #include <geos_c.h>
 #include <stdlib.h>
 */
