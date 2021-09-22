@@ -5,8 +5,7 @@ import (
 )
 
 /*
-#cgo CFLAGS: -I./lib/capi
-#cgo LDFLAGS: -L./lib -lgeos_c
+#cgo CFLAGS: -I./lib
 #include <geos_c.h>
 */
 import "C"

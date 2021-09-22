@@ -47,7 +47,7 @@ Using the C interface (recommended)
 To compile programs against the C lib (recommended):
 
   CFLAGS += `geos-config --cflags`
-  LDFLAGS += `geos-config --ldflags` -lgeos_c
+  LDFLAGS += `geos-config --ldflags` -lgeos
   #include <geos_c.h>
 
 Example usage:

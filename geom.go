@@ -8,10 +8,10 @@ import (
 
 /*
 #cgo CFLAGS: -I./lib
-#cgo linux LDFLAGS: -L./lib/linux -lgeos_c
-#cgo windows LDFLAGS: -L./lib/windows -lgeos_c
-#cgo darwin LDFLAGS: -L./lib/darwin -lgeos_c
-#cgo darwin,arm LDFLAGS: -L./lib/darwin_arm -lgeos_c
+#cgo linux LDFLAGS:-L ./lib/linux  -Wl,--start-group  -lpthread  -lstdc++ -lm  -lgeos  -Wl,--end-group
+#cgo windows LDFLAGS:-L ./lib/windows  -Wl,--start-group  -lpthread  -lstdc++ -lm  -lgeos  -Wl,--end-group
+#cgo darwin LDFLAGS:  -L /usr/lib -lc++ -L ./libs/darwin -lm  -lgeos
+#cgo darwin,arm LDFLAGS:  -L /usr/lib -lc++ -L./lib/darwin_arm -lm -lgeos
 #include <geos_c.h>
 #include <stdlib.h>
 */
