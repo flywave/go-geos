@@ -2,11 +2,20 @@ IF(UNIX)
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-float-conversion -Wno-shadow -Wno-unused-function -Wno-format-extra-args -Wno-unknown-pragmas -Wno-tautological-compare -Wno-attributes -Wno-unused-const-variable -Wno-sign-compare -Wno-deprecated-declarations")
 ENDIF()
 
+IF(APPLE)
+ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14")
+ENDIF()	
+
+if(UNIX AND NOT APPLE)
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC ")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC ")
+ENDIF()
+
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/geos/include)
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/geos/capi)
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/arch/common)
 
-IF (WIN32)
+IF (WIN32 AND NOT MINGW)
   INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/arch/win)
   set(CONFIG_SRC ${CMAKE_CURRENT_SOURCE_DIR}/arch/win/geos/platform.h)
 ELSE()
@@ -14,11 +23,11 @@ ELSE()
   set(CONFIG_SRC ${CMAKE_CURRENT_SOURCE_DIR}/arch/unix/geos/platform.h)
 ENDIF()
 
+
 SET(SRC_GEOS
   ${CMAKE_CURRENT_SOURCE_DIR}/geos/capi/geos_c.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/geos/capi/geos_ts_c.cpp
           ${CMAKE_CURRENT_SOURCE_DIR}/geos/src/inlines.cpp
-
 ${CMAKE_CURRENT_SOURCE_DIR}/geos/src/algorithm/Angle.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/geos/src/algorithm/BoundaryNodeRule.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/geos/src/algorithm/Centroid.cpp
@@ -110,7 +119,6 @@ ${CMAKE_CURRENT_SOURCE_DIR}/geos/src/geomgraph/PlanarGraph.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/geos/src/geomgraph/Position.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/geos/src/geomgraph/Quadrant.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/geos/src/geomgraph/TopologyLocation.cpp
-
 ${CMAKE_CURRENT_SOURCE_DIR}/geos/src/geomgraph/index/MonotoneChainEdge.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/geos/src/geomgraph/index/MonotoneChainIndexer.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/geos/src/geomgraph/index/SegmentIntersector.cpp
@@ -299,7 +307,43 @@ ${CMAKE_CURRENT_SOURCE_DIR}/geos/src/triangulate/quadedge/Vertex.cpp
           ${CMAKE_CURRENT_SOURCE_DIR}/geos/src/util/Profiler.cpp
           ${CMAKE_CURRENT_SOURCE_DIR}/geos/src/util/math.cpp
           
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/chain/MonotoneChain.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/chain/MonotoneChainBuilder.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/chain/MonotoneChainOverlapAction.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/chain/MonotoneChainSelectAction.cpp
+
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/strtree/AbstractNode.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/strtree/AbstractSTRtree.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/strtree/BoundablePair.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/strtree/Interval.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/strtree/ItemBoundable.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/strtree/SIRtree.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/strtree/STRtree.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/strtree/GeometryItemDistance.cpp
+
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/quadtree/DoubleBits.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/quadtree/IntervalSize.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/quadtree/Key.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/quadtree/Node.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/quadtree/NodeBase.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/quadtree/Quadtree.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/quadtree/Root.cpp
+ 
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/bintree/Bintree.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/bintree/Interval.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/bintree/Bintree.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/bintree/Key.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/bintree/Node.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/bintree/NodeBase.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/geos/src/index/bintree/Root.cpp
+
 )
+
+FILE(GLOB src_algorithm geos/src/algorithm/**.cpp)
+FILE(GLOB src_algorithm_distance geos/src/algorithm/distance/**.cpp)
+FILE(GLOB src_algorithm_locate geos/src/algorithm/locate/**.cpp)
+FILE(GLOB src_index_intervalrtree geos/src/index/intervalrtree/**.cpp)
+
 
 set(HEADERS_GEOS
         ${CMAKE_CURRENT_SOURCE_DIR}/geos/include/geos.h
@@ -310,6 +354,11 @@ set(HEADERS_GEOS
 ADD_LIBRARY(geos STATIC
   ${SRC_GEOS}
   ${HEADERS_GEOS}
+  ${src_algorithm}
+  ${src_algorithm_distance}
+  ${src_algorithm_locate}
+  ${src_index_intervalrtree}
+
           )
 
 TARGET_INCLUDE_DIRECTORIES(geos PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>)
@@ -319,7 +368,16 @@ SOURCE_GROUP("include" FILES ${HEADERS_GEOS})
 
 SET_TARGET_PROPERTIES(geos
                     PROPERTIES PUBLIC_HEADER "${headers}")
-
+SET_TARGET_PROPERTIES(geos PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_CURRENT_BINARY_DIR}
+    ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_BINARY_DIR})
+SET_TARGET_PROPERTIES(geos PROPERTIES 
+    LIBRARY_OUTPUT_DIRECTORY_DEBUG ${CMAKE_CURRENT_BINARY_DIR}
+    LIBRARY_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_BINARY_DIR})
+SET_TARGET_PROPERTIES(geos PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_CURRENT_BINARY_DIR}
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_CURRENT_BINARY_DIR})
+                    
 IF(FLYWAVE_ENABLE_SOLUTION_FOLDERS)
   SET_TARGET_PROPERTIES(geos PROPERTIES FOLDER external)
 ENDIF(FLYWAVE_ENABLE_SOLUTION_FOLDERS)
