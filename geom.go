@@ -9,7 +9,7 @@ import (
 /*
 #cgo CFLAGS: -I./lib
 #cgo linux LDFLAGS:-L ./lib/linux  -Wl,--start-group  -lpthread  -lstdc++ -lm  -lgeos  -Wl,--end-group
-#cgo windows LDFLAGS:-L ./lib/windows  -Wl,--start-group  -lpthread  -lstdc++ -lm  -lgeos  -Wl,--end-group
+#cgo windows LDFLAGS:-L ./lib/windows -lgeos -lstdc++
 #cgo darwin LDFLAGS:  -L /usr/lib -lc++ -L ./libs/darwin -lm  -lgeos
 #cgo darwin,arm LDFLAGS:  -L /usr/lib -lc++ -L./lib/darwin_arm -lm -lgeos
 #include <geos_c.h>
