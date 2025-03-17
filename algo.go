@@ -1,7 +1,7 @@
 package geos
 
 /*
-#cgo CFLAGS: -I./lib
+#cgo CFLAGS: -I ./lib
 #include <geos_c.h>
 */
 import "C"
