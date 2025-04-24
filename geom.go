@@ -7,7 +7,7 @@ import (
 )
 
 /*
-#cgo CFLAGS: -I ./lib
+#cgo CFLAGS: -I ./libs
 #cgo linux,amd64 LDFLAGS:-L ./libs/linux  -Wl,--start-group  -lpthread  -lstdc++ -lm  -lgeos  -Wl,--end-group
 #cgo linux,arm64 LDFLAGS:-L ./libs/linux_arm  -Wl,--start-group  -lpthread  -lstdc++ -lm  -lgeos  -Wl,--end-group
 #cgo windows LDFLAGS:-L ./libs/windows  -Wl,--start-group  -lpthread  -lstdc++ -lm  -lgeos  -Wl,--end-group
