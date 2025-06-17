@@ -1,3 +1,2 @@
-github.com/devork/geom v0.0.5/go.mod h1:8Wn8UNIJlX3waA51IiE8NHPWm1JFITeKJfxmYcK+hYg=
-github.com/flywave/go-geom v0.0.0-20210604134758-e972b6e6956d h1:Uc4RgGKDvLJ7Kkl7cnrvrUX41q5FJE6GcVwKqLzdAUY=
-github.com/flywave/go-geom v0.0.0-20210604134758-e972b6e6956d/go.mod h1:whIEyVfpaBVcYiDCnnc4IJg5CI5KpLC3quy95YJ1W9I=
+github.com/flywave/go-geom v0.0.0-20250607125323-f685bf20f12c h1:SxQgZciqp+IBGFyKhgk3XwFVUTc/sFRrSPkzJsKx0P4=
+github.com/flywave/go-geom v0.0.0-20250607125323-f685bf20f12c/go.mod h1:8xN6kA4AVXamQagVM3hJ041A2jt93KzQqL5f2aCEKy8=

@@ -1,5 +1,7 @@
 module github.com/flywave/go-geos
 
-go 1.13
+go 1.23.0
 
-require github.com/flywave/go-geom v0.0.0-20210604134758-e972b6e6956d
+toolchain go1.24.2
+
+require github.com/flywave/go-geom v0.0.0-20250607125323-f685bf20f12c
